@@ -68,7 +68,3 @@ Changelog
 
 **0.01** - 21/03/14 - Initial release.
 
-Donate
-======
-
-Like my work?  [Buy me a coffee.](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JUV2JAVFXY86Q)  =)
