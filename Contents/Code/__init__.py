@@ -294,7 +294,7 @@ def ListEpisodes(show_title, show_url, start_ep, end_ep):
 @route(PREFIX + "/getmirrors")
 def GetMirrors(ep_url):
 
-    MIRRORS = {'stream.moe': '18', 'mp4upload': '2', 'videonest': '12', 'openload': '19', 'yourupload':'14'}
+    mirrors = {'stream.moe': '18', 'mp4upload': '2', 'videonest': '12', 'openload': '19', 'yourupload':'14'}
 
     oc = ObjectContainer()
     page_data = HTML.ElementFromURL(ep_url)
@@ -309,9 +309,9 @@ def GetMirrors(ep_url):
         video_quality = each.xpath("./div[@class='mirror-quality']/text()")[0]
         video_host = each.xpath("./div[@class='mirror-text']/div[@class='mirror-provider']/text()")[0]
         video_title = video_type + " " + video_quality + " " + video_host
-        video_url = ep_url.split('?q=')[0] + '?q=' + video_quality + '&l=' + video_type + '&p=' + MIRRORS[video_host] 
+        video_url = ep_url.split('?q=')[0] + '?q=' + video_quality + '&l=' +  video_type.lower() + '&p=' + mirrors[video_host] 
 
-        if video_host in MIRRORS and video_host != "stream.moe" and video_host != "yourupload":
+        if video_host in mirrors and video_host != "stream.moe" and video_host != "yourupload":
             oc.add(VideoClipObject(
                 url = video_url,
                 title = video_title,
