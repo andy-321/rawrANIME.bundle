@@ -5,7 +5,7 @@ import openload
 ######################################################################################
 
 BASE_URL = 'http://rawranime.tv'
-RE_MP4UPLOAD = Regex("(?<='file': ')http:.*(?=')")
+RE_MP4UPLOAD = Regex('(?<="file": ")http:.*(?=")')
 RE_YOURUPLOAD = Regex("(?<=file: ').*mp4(?=')")
 RE_UPLOADC = Regex("(?<='file',').*(?=')")
 RE_VIDEONEST = Regex('(?<=file:").*(?=",p)')
@@ -82,7 +82,6 @@ def MediaObjectsForURL(url):
 def PlayVideo(url):
 
     page_data = HTML.ElementFromURL(url)
-    string_data = HTML.StringFromElement(page_data)
     url = page_data.xpath("//div[@class='scroller-inner']/div[contains(@class,'active')]")[0].get('data-src')
     
     if url.find("mp4upload") >= 0:
