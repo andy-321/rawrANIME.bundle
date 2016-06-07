@@ -29,9 +29,7 @@ def MetadataObjectForURL(url):
     show_art = "http://" + RE_BACKGROUND_IMAGE.search(HTML.StringFromElement(show_data.xpath("//div[@id='parallax-background']")[0])).group().split('"')[0]
     if len(show_data.xpath("//div[@class = 'listblur']")) > 0 :
         show_art = ""
-    show_summary = ""
-    for p in show_data.xpath("//div[@id = 'anime-info-synopsis']/p"):
-        show_summary = show_summary + "  " + p.xpath("./text()")[0]
+    show_summary = ''.join(show_data.xpath("//div[@id = 'anime-info-synopsis']/p/text()"))
     show_genres = show_data.xpath("//div[@id='anime-info-genres']/a[@class='anime-info-genre']/text()")
     show_date = int(show_data.xpath("//div[@class='anime-info-data-info']//span/text()")[0].split(" ")[1])
     try:
