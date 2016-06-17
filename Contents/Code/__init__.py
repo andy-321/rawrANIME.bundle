@@ -42,18 +42,13 @@ def MainMenu():
     oc = ObjectContainer()
     oc.add(DirectoryObject(key = Callback(LatestCategory, title="Latest Episodes"), title = "Latest Episodes", thumb = R(ICON_LIST)))
    # oc.add(DirectoryObject(key = Callback(ShowCategory, title="Most Popular", category = "/list/popular"), title = "Most Popular", thumb = R(ICON_LIST)))
-    oc.add(DirectoryObject(key = Callback(ShowCategory, title="Top Rated", category = "/index.php?ajax=anime&do=getlist&rs=0&r=1"), title = "Top Rated", thumb = R(ICON_LIST)))
+    oc.add(DirectoryObject(key = Callback(ShowCategory, title="Top Rated", category = "r=1"), title = "Top Rated", thumb = R(ICON_LIST)))
     oc.add(DirectoryObject(key = Callback(ShowCategory, title="Ongoing Anime", category = "current"), title = "Ongoing Anime", thumb = R(ICON_LIST)))
     oc.add(DirectoryObject(key = Callback(Bookmarks, title="My Bookmarks"), title = "My Bookmarks", thumb = R(ICON_QUEUE)))
     oc.add(InputDirectoryObject(key=Callback(Search), title = "Search", prompt = "Search for anime?", thumb = R(ICON_SEARCH)))
 
     return oc
 
-
-@route(PREFIX + "/getseason")
-def GetCurrentSeason():
-
-    return HTML.ElementFromURL(BASE_URL).xpath("//a[@class='navlink animelist-link']")[1].get('href')
 
 ######################################################################################
 # Loads bookmarked shows from Dict.  Titles are used as keys to store the show urls.
@@ -166,7 +161,7 @@ def LatestCategory(title):
 def ShowCategory(title, category):
 
     oc = ObjectContainer(title1 = title)
-    page_data = HTML.ElementFromString(JSON.ObjectFromURL(BASE_URL + (category if category == "/index.php?ajax=anime&do=getlist&rs=0&r=1" else "/index.php?ajax=anime&do=getlist&rs=0&" + GetCurrentSeason()))['html']) 
+    page_data = HTML.ElementFromString(JSON.ObjectFromURL(BASE_URL + "/index.php?ajax=anime&do=getlist&rs=0&" + (category if (category == "r=1") else HTML.ElementFromURL(BASE_URL).xpath("//a[@class='navlink animelist-link']")[1].get('href')))['html']) 
 
     if not HTML.StringFromElement(page_data).startswith("<div"):
         page_data = HTML.ElementFromString("<div>" + HTML.StringFromElement(page_data) + "</div>")
