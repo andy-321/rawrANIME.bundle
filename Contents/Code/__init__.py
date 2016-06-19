@@ -41,7 +41,7 @@ def MainMenu():
 
     oc = ObjectContainer()
     oc.add(DirectoryObject(key = Callback(LatestCategory, title="Latest Episodes"), title = "Latest Episodes", thumb = R(ICON_LIST)))
-   # oc.add(DirectoryObject(key = Callback(ShowCategory, title="Most Popular", category = "/list/popular"), title = "Most Popular", thumb = R(ICON_LIST)))
+    oc.add(DirectoryObject(key = Callback(MostPopular, title="Most Popular"), title = "Most Popular", thumb = R(ICON_LIST)))
     oc.add(DirectoryObject(key = Callback(ShowCategory, title="Top Rated", category = "r=1"), title = "Top Rated", thumb = R(ICON_LIST)))
     oc.add(DirectoryObject(key = Callback(ShowCategory, title="Ongoing Anime", category = "current"), title = "Ongoing Anime", thumb = R(ICON_LIST)))
     oc.add(DirectoryObject(key = Callback(Bookmarks, title="My Bookmarks"), title = "My Bookmarks", thumb = R(ICON_QUEUE)))
@@ -62,7 +62,7 @@ def Bookmarks(title):
         show_url = Dict[each]
         page_data = HTML.ElementFromURL(show_url)
         show_title = each
-        show_thumb = "http://" + Regex('(?<=data-src="\/\/).*(?=">)').search(HTML.StringFromElement(page_data.xpath("//div[@id='anime-info-listimage']")[0])).group()
+        show_thumb = "http://" + each.xpath("./div[@class='al-image']/@data-src")[0].split('//')[1]
         show_summary = ""
         for p in page_data.xpath("//div[@id = 'anime-info-synopsis']/p"):
             show_summary = show_summary + "  " + p.xpath("./text()")[0]
@@ -150,6 +150,30 @@ def LatestCategory(title):
     if len(oc) < 1:
         Log ("No shows found! Check xpath queries.")
         return ObjectContainer(header="Error", message="Error! Please let TehCrucible know, at the Plex forums.")
+
+    return oc
+
+
+######################################################################################
+# Creates Most Popular show objects from the front page
+
+
+@route(PREFIX + "/mostpopular")
+def MostPopular(title):
+    oc = ObjectContainer(title1 = title)
+    page_data = HTML.ElementFromURL(BASE_URL)
+    popularShows = page_data.xpath(".//div[@id='home-topanime-pop']/div[@class='home-topanime-anime']")
+
+    for each in popularShows:
+        show_url = BASE_URL + each.xpath("./a/@href")[0]
+        show_title = each.xpath("./div[@class='home-topanime-data']/a/text()")[0]
+        show_thumb = "http://" + each.xpath("./a[@class='home-topanime-image']/@data-src")[0].split('//')[1]
+        oc.add(DirectoryObject(
+            key = Callback(PageEpisodes, show_title = show_title, show_url = show_url),
+            title = show_title,
+            thumb = Resource.ContentsOfURLWithFallback(url = show_thumb, fallback='icon-cover.png')
+            )
+        )
 
     return oc
 
