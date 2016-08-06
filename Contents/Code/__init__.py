@@ -185,11 +185,11 @@ def MostPopular(title):
 def ShowCategory(title, category):
 
     oc = ObjectContainer(title1 = title)
-    page_data = HTML.ElementFromString(JSON.ObjectFromURL(BASE_URL + "/index.php?ajax=anime&do=getlist&rs=0&" + (category if (category == "r=1") else HTML.ElementFromURL(BASE_URL).xpath("//a[@class='navlink animelist-link']")[1].get('href')))['html']) 
+    page_data = HTML.ElementFromString(JSON.ObjectFromURL(BASE_URL + "/index.php?ajax=anime&do=getlist&rs=0&" + (category if (category == "r=1") else HTML.ElementFromURL(BASE_URL).xpath("//a[@class='navlink animelist-link']")[1].get('href')))['html'])
 
     if not HTML.StringFromElement(page_data).startswith("<div"):
         page_data = HTML.ElementFromString("<div>" + HTML.StringFromElement(page_data) + "</div>")
-    for i in range(0,len(page_data) if ((len(page_data) - ( len(page_data) % 200)) == 0) else 200):
+    for i in range(0,len(page_data) if ((len(page_data) - (len(page_data) % 200)) == 0) else 200):
         each = page_data[i]
         show_url = BASE_URL + each.get('href')
         show_title = each.xpath("./div[@class='al-name']/text()")[0].strip()

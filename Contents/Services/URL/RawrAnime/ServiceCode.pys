@@ -8,7 +8,7 @@ BASE_URL = 'http://rawranime.tv'
 RE_MP4UPLOAD = Regex('(?<="file": ")http:.*(?=")')
 RE_YOURUPLOAD = Regex("(?<=file: ').*mp4(?=')")
 RE_UPLOADC = Regex("(?<='file',').*(?=')")
-RE_VIDEONEST = Regex('(?<=file:").*(?=",p)')
+RE_VIDEONEST = Regex('(?<=file: ").*(?=",)')
 RE_VIDBOX = Regex("(?<=url: ')http:\/\/serv.*..mp4(?=')")
 RE_DAILYMOTION = Regex('(?<=stream_h264_url":").*(?=","stream_h264_ld_url)')
 ICON_COVER = "icon-cover.png"
@@ -29,7 +29,7 @@ def MetadataObjectForURL(url):
     show_art = ("http://" + RE_BACKGROUND_IMAGE.search(HTML.StringFromElement(show_data.xpath("//div[@id='parallax-background']")[0])).group().split('"')[0]) if not(len(show_data.xpath("//div[@class = 'listblur']"))) > 0 else ""
     show_summary = ''.join(show_data.xpath("//div[@id = 'anime-info-synopsis']/p/text()"))
     show_genres = show_data.xpath("//div[@id='anime-info-genres']/a[@class='anime-info-genre']/text()")
-    show_date = int(show_data.xpath("//div[@class='anime-info-data-info']//span/text()")[0].split(" ")[1])
+    show_date = int(show_data.xpath("//div[@class='anime-info-data-info']/span/text()")[0].split(" ")[1])
     try:
         show_rating = float(show_data.xpath("//div[@class='anime-info-data-label']/text()")[0].strip().split("Rating ")[1])
     except:
@@ -103,10 +103,8 @@ def PlayVideo(url):
 
     if url.find("videonest") >= 0:
         page_data = HTML.ElementFromURL(url)
-        string_data = HTML.StringFromElement(page_data).translate(None, ' \n\t\r')
-        packed_js = RE_VIDEONEST_PACKED.search(string_data).group().strip()
-        unpacked_js = packer.unpack(packed_js)
-        url = RE_VIDEONEST.search(unpacked_js).group()
+        string_data = HTML.StringFromElement(page_data)
+        url = RE_VIDEONEST.search(string_data).group()
         Log(url)
         return IndirectResponse(VideoClipObject, key=url)
 
