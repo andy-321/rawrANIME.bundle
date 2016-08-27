@@ -62,11 +62,13 @@ def Bookmarks(title):
         show_url = Dict[each]
         page_data = HTML.ElementFromURL(show_url)
         show_title = each
-        show_thumb = "http://" + each.xpath("./div[@class='al-image']/@data-src")[0].split('//')[1]
+        #show_thumb = "http://" + each.xpath("./div[@class='al-image']/@data-src")[0].split('//')[1]
+        show_thumb = "http://" + Regex('(?<=data-src="\/\/).*(?=">)').search(HTML.StringFromElement(page_data.xpath("//div[@id='anime-info-listimage']")[0])).group()
+		
         show_summary = ""
         for p in page_data.xpath("//div[@id = 'anime-info-synopsis']/p"):
             show_summary = show_summary + "  " + p.xpath("./text()")[0]
-
+		
         oc.add(DirectoryObject(
             key = Callback(PageEpisodes, show_title = show_title, show_url = show_url),
             title = show_title,
